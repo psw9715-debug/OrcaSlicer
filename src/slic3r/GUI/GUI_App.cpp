@@ -2340,6 +2340,10 @@ void GUI_App::init_download_path()
 #if wxUSE_WEBVIEW_EDGE
 void GUI_App::init_webview_runtime()
 {
+    // No runtime is needed when web panels are disabled.
+    if (app_config->get_bool("disable_webview"))
+        return;
+
     // Check whether the Microsoft WebView2 runtime is already present.
     if (WebView::CheckWebViewRuntime()) {
         BOOST_LOG_TRIVIAL(info) << "WebView2 runtime detected.";

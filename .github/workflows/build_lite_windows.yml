@@ -1,0 +1,17 @@
+name: Build OrcaLite Windows
+
+# Windows x64 only, for the OrcaLite branch (build_all.yml also builds Linux/macOS).
+on:
+  push:
+    branches:
+     - orcalite
+  workflow_dispatch:
+
+jobs:
+  build_windows:
+    uses: ./.github/workflows/build_check_cache.yml
+    with:
+      os: windows-latest
+      arch: x64
+      build-deps-only: false
+    secrets: inherit

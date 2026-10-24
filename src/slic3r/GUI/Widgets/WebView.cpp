@@ -246,6 +246,17 @@ public:
 
 wxWebView* WebView::CreateWebView(wxWindow * parent, wxString const & url)
 {
+    // "disable_webview" (off by default) never starts a browser engine: every web panel
+    // gets an inert placeholder window, the same FakeWebView used when creation fails.
+    auto app_config = Slic3r::GUI::wxGetApp().app_config;
+    if (app_config && app_config->get_bool("disable_webview")) {
+        BOOST_LOG_TRIVIAL(info) << __FUNCTION__ << ": disabled by config, use fake web view.";
+        wxWebView* webView = new FakeWebView;
+        webView->wxControl::Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE);
+        webView->SetRefData(new WebViewRef(webView));
+        g_webviews.push_back(webView);
+        return webView;
+    }
 #if wxUSE_WEBVIEW_EDGE
     // Check if a fixed version of edge is present in
     // $executable_path/edge_fixed and use it
